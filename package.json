@@ -23,6 +23,7 @@
   "homepage": "https://github.com/enab-dev/mock-api",
   "dependencies": {
     "express": "^3.5.1",
-    "replify": "^1.2.0"
+    "replify": "^1.2.0",
+    "chalk": "^0.4.0"
   }
 }
