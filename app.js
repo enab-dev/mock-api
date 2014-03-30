@@ -1,18 +1,23 @@
 var express = require('express'),
-replify = require('replify'),
-http = require('http'),
-path = require('path'),
-routes = require('./routes'),
-app = express(),
-options = {latency: 0, data: {server: 'OK'}};
+	replify = require('replify'),
+	http = require('http'),
+	path = require('path'),
+	app = express(),
+	options = {
+		latency: 0,
+		data: {
+			server: 'OK'
+		}
+	};
 
+// set up a repl server
 replify('api-mock-server', app);
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(app.router);
+// helper function to output result of REPL commands
+var outputResult = function(message) {
+	console.log(message);
+	return message;
+}
 
 // allows for latency to be set
 app.latency = function(latency) {
@@ -20,12 +25,8 @@ app.latency = function(latency) {
 	app.configure(function() {
 		app.set('options', options);
 	});
-	var logString = ('Latency set to '+options.latency+'ms!');
-	console.log(logString);
-	return logString;
+	return outputResult('Latency set to ' + options.latency + 'ms!');
 }
-// set default latency
-app.latency();
 
 // allows for data to be set
 app.data = function(data) {
@@ -33,25 +34,30 @@ app.data = function(data) {
 	app.configure(function() {
 		app.set('options', options);
 	});
-	var logString = ('data set to '+JSON.stringify(options.data)+'!');
-	console.log(logString);
-	return logString;
+	return outputResult('data set to ' + JSON.stringify(options.data) + '!');
 }
-// set default data
-app.data();
 
-// allows for route to be set
+// allows route to be set externally
 app.route = function(route) {
-	route = route || '/'; 
-	app.get(route, routes.index);
-	var logString = ('Route set to \''+route+'\'!');
-	console.log(logString);
-	return logString;
+	route = route || '/';
+	app.get(route, function(req, res) {
+		console.log('Responding with latency of ' + options.latency + 'ms!');
+		setTimeout(function() {
+			res.send(options.data);
+		}, options.latency);
+	});
+	return outputResult('Route set to \'' + route + '\'!');
 }
-// set default route
+
+// initialize defaults
+app.set('port', process.env.PORT || 3000);
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(app.router);
+app.latency();
+app.data();
 app.route();
 
-http.createServer(app).listen(app.get('port'), function(){
-  console.log('API mock server listening on port ' + app.get('port'));
+http.createServer(app).listen(app.get('port'), function() {
+	console.log('API mock server listening on port ' + app.get('port'));
 });
-
