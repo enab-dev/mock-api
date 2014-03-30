@@ -1,0 +1,28 @@
+{
+  "name": "mock-api",
+  "version": "0.0.0",
+  "description": "API to be used for mocking endpoints",
+  "main": "app.js",
+  "scripts": {
+    "test": "test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/enab-dev/mock-api.git"
+  },
+  "keywords": [
+    "node.js",
+    "api",
+    "mock"
+  ],
+  "author": "bane debeljevic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/enab-dev/mock-api/issues"
+  },
+  "homepage": "https://github.com/enab-dev/mock-api",
+  "dependencies": {
+    "express": "^3.5.1",
+    "replify": "^1.2.0"
+  }
+}
